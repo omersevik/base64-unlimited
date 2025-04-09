@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - Base64 Image Encoder</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .faq-section {
+            margin: 40px 0;
+        }
+        
+        .faq-item {
+            margin-bottom: 30px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 20px;
+        }
+        
+        .faq-item h3 {
+            margin-bottom: 15px;
+            color: #0066cc;
+        }
+        
+        .faq-item p {
+            margin-bottom: 15px;
+        }
+        
+        .faq-item code {
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Base64 Image Encoder</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="tutorial.html">Tutorial</a></li>
+                <li><a href="#" class="active">FAQ</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="faq-section">
+            <h2>Frequently Asked Questions</h2>
+            
+            <div class="faq-item">
+                <h3>What is Base64 encoding?</h3>
+                <p>
+                    Base64 is a binary-to-text encoding scheme that represents binary data (like images) in a string format.
+                    It uses a set of 64 characters (A-Z, a-z, 0-9, +, /) to represent binary data. This makes it possible to
+                    embed binary files directly within text-based formats like HTML, CSS, or JSON.
+                </p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>Is there a file size limit for images I can convert?</h3>
+                <p>
+                    Unlike many other online converters that have specific file size limits (like 1MB), our tool has no artificial size limit.
+                    The only limitation is your browser's memory capacity. However, very large images (over 10MB) might cause performance issues
+                    in your browser, so we recommend caution when encoding extremely large files.
+                </p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>What image formats are supported?</h3>
+                <p>
+                    Our tool supports all common image formats including:
+                </p>
+                <ul>
+                    <li>JPEG/JPG</li>
+                    <li>PNG</li>
+                    <li>GIF</li>
+                    <li>WebP</li>
+                    <li>SVG</li>
+                    <li>BMP</li>
+                </ul>
+            </div>
+            
+            <div class="faq-item">
+                <h3>Is my data private and secure?</h3>
+                <p>
+                    Yes! All processing happens entirely within your browser. Your images are never uploaded to any server,
+                    and the conversion process occurs locally on your device. This ensures maximum privacy and security for your images.
+                </p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>Why would I use Base64 encoded images?</h3>
+                <p>
+                    Base64 encoded images are useful in several scenarios:
+                </p>
+                <ul>
+                    <li>To reduce HTTP requests (improving page load performance)</li>
+                    <li>When you want to embed images directly in your HTML/CSS without separate image files</li>
+                    <li>For sending images in API responses without requiring additional file downloads</li>
+                    <li>In HTML emails where external images might be blocked</li>
+                    <li>When you need to store image data in text-based systems or databases</li>
+                </ul>
+            </div>
+            
+            <div class="faq-item">
+                <h3>Does Base64 encoding make my image files smaller?</h3>
+                <p>
+                    No, Base64 encoding actually increases the file size by approximately 33% compared to the original binary image.
+                    This is because the encoding uses 4 characters to represent 3 bytes of binary data. The benefit is not in file size
+                    but in the ability to embed the image directly in text-based formats.
+                </p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>How do I use the Base64 encoded image?</h3>
+                <p>
+                    Our tool provides two common formats for using the encoded image:
+                </p>
+                <ol>
+                    <li>
+                        <strong>HTML &lt;img&gt; tag:</strong>
+                        <code>&lt;img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAA..." alt="Image" /&gt;</code>
+                    </li>
+                    <li>
+                        <strong>CSS background:</strong>
+                        <code>background-image: url(data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAA...);</code>
+                    </li>
+                </ol>
+                <p>
+                    You can simply copy the provided code and paste it into your HTML or CSS files.
+                </p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>Can I convert multiple images at once?</h3>
+                <p>
+                    Yes! Our tool supports batch conversion. You can drag and drop multiple files or select multiple
+                    files using the file browser. Each image will be processed individually, and results will be displayed for each.
+                </p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>Is there a way to compress the images before encoding?</h3>
+                <p>
+                    Currently, our tool focuses purely on the encoding process without compression. However, you can use an image
+                    compression tool before uploading your images to our converter if file size is a concern.
+                </p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>Do all browsers support Base64 images?</h3>
+                <p>
+                    Yes, all modern browsers support Base64 encoded images. This includes:
+                </p>
+                <ul>
+                    <li>Google Chrome 4+</li>
+                    <li>Firefox 2+</li>
+                    <li>Safari 3.1+</li>
+                    <li>Edge (all versions)</li>
+                    <li>Internet Explorer 8+</li>
+                    <li>Opera 9+</li>
+                </ul>
+                <p>
+                    Note that Internet Explorer 8 has a limitation of 32KB for data URIs, which might be an issue for larger images.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Base64 Image Encoder - No Size Limit</p>
+    </footer>
+</body>
+</html> 

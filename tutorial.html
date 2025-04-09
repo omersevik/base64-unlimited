@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial - Base64 Image Encoder</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .tutorial-section {
+            margin: 40px 0;
+        }
+        
+        .tutorial-section h2 {
+            margin-bottom: 20px;
+            color: #0066cc;
+        }
+        
+        .tutorial-section p {
+            margin-bottom: 15px;
+        }
+        
+        .tutorial-section code {
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        
+        .code-block {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        .step {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .step h3 {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Base64 Image Encoder</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#" class="active">Tutorial</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="tutorial-section">
+            <h2>What is Base64 Encoding?</h2>
+            <p>
+                Base64 is a binary-to-text encoding scheme that represents binary data in an ASCII string format.
+                It is commonly used when there is a need to encode binary data that needs to be stored and transferred
+                over media that are designed to deal with text. This encoding helps ensure that the data remains intact
+                without modification during transport.
+            </p>
+            <p>
+                For images, Base64 encoding allows you to embed the image directly in HTML or CSS without requiring a separate image file.
+            </p>
+        </section>
+
+        <section class="tutorial-section">
+            <h2>How to Use Base64 Image Encoder</h2>
+            
+            <div class="step">
+                <h3>Step 1: Upload Your Image</h3>
+                <p>On the home page, you can upload an image in two ways:</p>
+                <ul>
+                    <li>Drag and drop one or more images onto the drop area</li>
+                    <li>Click on the "click here" button to browse and select images from your device</li>
+                </ul>
+                <p>Unlike many other online converters, our tool has no file size limit (except for your browser's memory constraints).</p>
+            </div>
+            
+            <div class="step">
+                <h3>Step 2: Get Your Base64 Encoded String</h3>
+                <p>After uploading, each image will be processed and displayed with its details:</p>
+                <ul>
+                    <li>Filename</li>
+                    <li>Original filesize</li>
+                    <li>Encoded size</li>
+                    <li>Image dimensions (width and height)</li>
+                </ul>
+                <p>You'll see two text areas:</p>
+                <ul>
+                    <li>HTML code for using the image in an <code>&lt;img&gt;</code> tag</li>
+                    <li>CSS code for using the image as a background</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <h3>Step 3: Copy and Use the Encoded String</h3>
+                <p>Click the "Copy to clipboard" button next to either the HTML or CSS code, depending on how you want to use the image.</p>
+                
+                <h4>Using Base64 in HTML</h4>
+                <p>To embed the image directly in your HTML, paste the copied HTML code into your document:</p>
+                <div class="code-block">
+                    &lt;img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAA..." alt="Example" /&gt;
+                </div>
+                
+                <h4>Using Base64 in CSS</h4>
+                <p>To use the image as a background in CSS, paste the copied CSS code into your stylesheet:</p>
+                <div class="code-block">
+                    background-image: url(data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAA...);
+                </div>
+            </div>
+        </section>
+
+        <section class="tutorial-section">
+            <h2>Benefits of Using Base64 Encoded Images</h2>
+            <ul>
+                <li><strong>Reduced HTTP Requests:</strong> Embedding images directly in HTML or CSS reduces the number of HTTP requests needed to render a page.</li>
+                <li><strong>No Separate Files:</strong> You don't need to maintain separate image files or worry about broken image links.</li>
+                <li><strong>Works Offline:</strong> Base64 encoded images work even when offline since they're embedded in the document.</li>
+                <li><strong>Email Compatibility:</strong> Base64 encoded images can be included in HTML emails where external images might be blocked.</li>
+            </ul>
+        </section>
+
+        <section class="tutorial-section">
+            <h2>Considerations</h2>
+            <ul>
+                <li><strong>Increased File Size:</strong> Base64 encoding increases the file size by approximately 33% compared to the original binary image.</li>
+                <li><strong>No Browser Caching:</strong> Embedded images can't be cached separately by browsers, unlike external image files.</li>
+                <li><strong>Performance:</strong> For large images or many small images, using Base64 might affect page loading times.</li>
+            </ul>
+            <p>
+                It's generally recommended to use Base64 encoding for small images (icons, small decorative elements) and standard image links for larger images.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Base64 Image Encoder - No Size Limit</p>
+    </footer>
+</body>
+</html> 

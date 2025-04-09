@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base64 Image Encoder - No Size Limit</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Base64 Image Encoder</h1>
+        <nav>
+            <ul>
+                <li><a href="#" class="active">Home</a></li>
+                <li><a href="tutorial.html">Tutorial</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="upload-section">
+            <h2>Convert your images to base64 - No Size Limit</h2>
+            <div class="upload-container" id="drop-area">
+                <p>Drag & drop images anywhere</p>
+                <p>or</p>
+                <button id="upload-button">click here</button>
+                <input type="file" id="file-input" accept="image/*" multiple hidden>
+            </div>
+        </section>
+
+        <section class="results-section" id="results-container">
+            <!-- Results will be displayed here -->
+        </section>
+    </main>
+
+    <section class="info-section">
+        <div class="info-box">
+            <h3>Supported file formats</h3>
+            <p>You can upload images as JPG, PNG, GIF, WebP, SVG or BMP.</p>
+        </div>
+
+        <div class="info-box">
+            <h3>Browser support</h3>
+            <p>The encoded results are compatible with all major browsers:</p>
+            <ul>
+                <li>Google Chrome 4+</li>
+                <li>Apple Safari 3.1+</li>
+                <li>Mozilla Firefox 2+</li>
+                <li>Opera 9+</li>
+                <li>Microsoft Edge</li>
+                <li>Microsoft Internet Explorer 8+</li>
+            </ul>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2023 Base64 Image Encoder - No Size Limit</p>
+    </footer>
+
+    <template id="result-template">
+        <div class="result-item">
+            <div class="result-info">
+                <p><strong>Filename:</strong> <span class="filename"></span></p>
+                <p><strong>Filesize:</strong> <span class="filesize"></span></p>
+                <p><strong>Encoded:</strong> <span class="encoded-size"></span></p>
+                <p><strong>Width:</strong> <span class="width"></span></p>
+                <p><strong>Height:</strong> <span class="height"></span></p>
+            </div>
+            <div class="result-actions">
+                <div class="code-box">
+                    <h4>For use in &lt;img&gt; elements:</h4>
+                    <div class="code-container">
+                        <textarea class="img-code" readonly></textarea>
+                        <button class="copy-button" data-target="img">Copy to clipboard</button>
+                    </div>
+                </div>
+                <div class="code-box">
+                    <h4>For use as CSS background:</h4>
+                    <div class="code-container">
+                        <textarea class="css-code" readonly></textarea>
+                        <button class="copy-button" data-target="css">Copy to clipboard</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script src="script.js"></script>
+</body>
+</html> 
