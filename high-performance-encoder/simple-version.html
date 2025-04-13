@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Base64 Batch Encoder</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f8f9fa;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #2980b9;
+      }
+
+      .description {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #666;
+      }
+
+      .panel {
+        background-color: white;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+
+      .panel-title {
+        font-size: 18px;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+      }
+
+      .upload-area {
+        border: 3px dashed #ddd;
+        border-radius: 5px;
+        padding: 30px;
+        text-align: center;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-bottom: 20px;
+      }
+
+      .upload-area:hover {
+        background-color: #f1f8ff;
+        border-color: #3498db;
+      }
+
+      .upload-area.highlight {
+        background-color: #f1f8ff;
+        border-color: #3498db;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+      }
+
+      .btn:hover {
+        background-color: #2980b9;
+      }
+
+      .btn:disabled {
+        background-color: #95a5a6;
+        cursor: not-allowed;
+      }
+
+      .btn-secondary {
+        background-color: #2ecc71;
+      }
+
+      .btn-secondary:hover {
+        background-color: #27ae60;
+      }
+
+      .btn-group {
+        display: flex;
+        gap: 10px;
+        margin: 20px 0;
+        flex-wrap: wrap;
+      }
+
+      .option-group {
+        margin-bottom: 15px;
+      }
+
+      .option-group label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      .option-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .option-row input[type="number"] {
+        width: 80px;
+        padding: 5px;
+        margin: 0 5px;
+      }
+
+      .progress-area {
+        display: none;
+        margin-top: 20px;
+      }
+
+      .progress-bar-container {
+        height: 20px;
+        background-color: #ecf0f1;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 10px;
+      }
+
+      .progress-bar {
+        height: 100%;
+        background-color: #3498db;
+        width: 0%;
+        transition: width 0.3s;
+      }
+
+      .progress-text {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+      }
+
+      .results-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .result-item {
+        background-color: white;
+        border-radius: 5px;
+        overflow: hidden;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .result-img {
+        height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f5f5f5;
+        overflow: hidden;
+      }
+
+      .result-img img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+
+      .result-info {
+        padding: 10px;
+      }
+
+      .result-filename {
+        font-weight: bold;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .result-stats {
+        font-size: 12px;
+        color: #666;
+        margin: 5px 0;
+      }
+
+      .result-actions {
+        display: flex;
+        padding: 0 10px 10px;
+        flex-direction: column;
+      }
+
+      .copy-actions {
+        display: flex;
+        gap: 5px;
+        margin-bottom: 5px;
+      }
+
+      .copy-actions button {
+        flex: 1;
+        padding: 5px 10px;
+        font-size: 14px;
+      }
+
+      #file-input {
+        display: none;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .panel-subtitle {
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #555;
+      }
+
+      .radio-group {
+        display: flex;
+        gap: 20px;
+      }
+
+      .radio-option {
+        display: flex;
+        align-items: center;
+      }
+
+      .radio-option input {
+        margin-right: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Simple Base64 Batch Encoder</h1>
+    <p class="description">
+      Basitleştirilmiş toplu resim kodlama aracı (CPU üzerinde çalışır)
+    </p>
+
+    <div class="panel">
+      <h2 class="panel-title">1. Resim Seçin</h2>
+      <div id="upload-area" class="upload-area">
+        <p>Resimleri sürükleyip bırakın veya tıklayın</p>
+        <p><span id="file-counter">0</span> resim seçildi</p>
+        <input type="file" id="file-input" multiple accept="image/*" />
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2 class="panel-title">2. İşleme Seçenekleri</h2>
+      <div class="option-group">
+        <div class="option-row">
+          <input type="checkbox" id="resize-checkbox" value="1" />
+          <label for="resize-checkbox">Resimleri yeniden boyutlandır</label>
+        </div>
+
+        <div id="resize-options" class="hidden">
+          <div class="option-row">
+            <label for="width">Genişlik:</label>
+            <input type="number" id="width" value="600" min="1" />
+            <span>px</span>
+          </div>
+
+          <div class="option-row">
+            <label for="height">Yükseklik:</label>
+            <input type="number" id="height" value="400" min="1" />
+            <span>px</span>
+          </div>
+
+          <div class="option-row">
+            <input type="checkbox" id="maintain-aspect" checked />
+            <label for="maintain-aspect">En-boy oranını koru</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="option-group">
+        <div class="panel-subtitle">Kopyalama tercihi:</div>
+        <div class="option-row radio-group">
+          <div class="radio-option">
+            <input
+              type="radio"
+              id="copy-type-img"
+              name="copy-type"
+              value="img"
+              checked
+            />
+            <label for="copy-type-img">IMG tag'leri</label>
+          </div>
+          <div class="radio-option">
+            <input
+              type="radio"
+              id="copy-type-data"
+              name="copy-type"
+              value="data"
+            />
+            <label for="copy-type-data">Sadece data</label>
+          </div>
+          <div class="radio-option">
+            <input
+              type="radio"
+              id="copy-type-both"
+              name="copy-type"
+              value="both"
+            />
+            <label for="copy-type-both">Her ikisi</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="option-group">
+        <div class="option-row">
+          <label for="chunk-size">İşleme hızı (her seferde):</label>
+          <input type="number" id="chunk-size" value="3" min="1" max="10" />
+          <span>resim</span>
+          <small style="margin-left: 10px; color: #666"
+            >(Tarayıcının donmaması için düşük bir değer seçin)</small
+          >
+        </div>
+      </div>
+
+      <button id="start-button" class="btn" disabled>İşlemeyi Başlat</button>
+    </div>
+
+    <div id="progress-area" class="progress-area panel">
+      <h2 class="panel-title">İşleme Durumu</h2>
+      <div class="progress-bar-container">
+        <div id="progress-bar" class="progress-bar"></div>
+      </div>
+      <div class="progress-text">
+        <span id="progress-status">0/0 işlendi</span>
+        <span id="progress-percentage">0%</span>
+      </div>
+    </div>
+
+    <div id="results-panel" class="panel hidden">
+      <h2 class="panel-title">Sonuçlar</h2>
+      <div class="btn-group">
+        <button id="copy-all-button" class="btn">Tüm IMG Kodları</button>
+        <button id="copy-all-data-button" class="btn">Tüm Data'lar</button>
+        <button id="save-txt-button" class="btn btn-secondary">
+          IMG Dosyası
+        </button>
+        <button id="save-data-button" class="btn btn-secondary">
+          Data Dosyası
+        </button>
+        <button id="reset-button" class="btn btn-secondary">Yeni İşlem</button>
+      </div>
+      <div id="results-grid" class="results-grid"></div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // DOM Elements
+        const uploadArea = document.getElementById("upload-area");
+        const fileInput = document.getElementById("file-input");
+        const fileCounter = document.getElementById("file-counter");
+        const resizeCheckbox = document.getElementById("resize-checkbox");
+        const resizeOptions = document.getElementById("resize-options");
+        const startButton = document.getElementById("start-button");
+        const progressArea = document.getElementById("progress-area");
+        const progressBar = document.getElementById("progress-bar");
+        const progressStatus = document.getElementById("progress-status");
+        const progressPercentage = document.getElementById(
+          "progress-percentage"
+        );
+        const resultsPanel = document.getElementById("results-panel");
+        const resultsGrid = document.getElementById("results-grid");
+        const copyAllButton = document.getElementById("copy-all-button");
+        const copyAllDataButton = document.getElementById(
+          "copy-all-data-button"
+        );
+        const saveTxtButton = document.getElementById("save-txt-button");
+        const saveDataButton = document.getElementById("save-data-button");
+        const resetButton = document.getElementById("reset-button");
+        const chunkSizeInput = document.getElementById("chunk-size");
+
+        // State
+        let files = [];
+        let processedFiles = [];
+        let isProcessing = false;
+        let totalProcessed = 0;
+        let totalErrors = 0;
+
+        // Event Listeners
+        uploadArea.addEventListener("click", () => fileInput.click());
+        fileInput.addEventListener("change", handleFileSelect);
+        resizeCheckbox.addEventListener("change", toggleResizeOptions);
+        startButton.addEventListener("click", startProcessing);
+        copyAllButton.addEventListener("click", copyAllBase64);
+        copyAllDataButton.addEventListener("click", copyAllDataOnly);
+        saveTxtButton.addEventListener("click", () => saveAsTextFile(false));
+        saveDataButton.addEventListener("click", () => saveAsTextFile(true));
+        resetButton.addEventListener("click", resetApplication);
+
+        // Drag and drop handling
+        ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+          uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        ["dragenter", "dragover"].forEach((eventName) => {
+          uploadArea.addEventListener(eventName, highlight, false);
+        });
+
+        ["dragleave", "drop"].forEach((eventName) => {
+          uploadArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        uploadArea.addEventListener("drop", handleDrop, false);
+
+        // Functions
+        function preventDefaults(e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+
+        function highlight() {
+          uploadArea.classList.add("highlight");
+        }
+
+        function unhighlight() {
+          uploadArea.classList.remove("highlight");
+        }
+
+        function toggleResizeOptions() {
+          if (resizeCheckbox.checked) {
+            resizeOptions.classList.remove("hidden");
+          } else {
+            resizeOptions.classList.add("hidden");
+          }
+        }
+
+        function handleFileSelect(e) {
+          const newFiles = [...e.target.files].filter((file) =>
+            file.type.match("image.*")
+          );
+
+          if (newFiles.length === 0) {
+            alert("Lütfen sadece resim dosyaları seçin.");
+            return;
+          }
+
+          addFiles(newFiles);
+        }
+
+        function handleDrop(e) {
+          const dt = e.dataTransfer;
+          const newFiles = [...dt.files].filter((file) =>
+            file.type.match("image.*")
+          );
+
+          if (newFiles.length === 0) {
+            alert("Lütfen sadece resim dosyaları bırakın.");
+            return;
+          }
+
+          addFiles(newFiles);
+        }
+
+        function addFiles(newFiles) {
+          files = [...files, ...newFiles];
+          fileCounter.textContent = files.length;
+          startButton.disabled = files.length === 0;
+          fileInput.value = "";
+        }
+
+        function startProcessing() {
+          if (files.length === 0) {
+            alert("Lütfen önce resim seçin.");
+            return;
+          }
+
+          // Hazırlık
+          processedFiles = [];
+          totalProcessed = 0;
+          totalErrors = 0;
+          isProcessing = true;
+
+          // UI güncelleme
+          startButton.disabled = true;
+          progressArea.style.display = "block";
+          resultsGrid.innerHTML = "";
+          updateProgress(0, files.length);
+
+          // İşlem başlat
+          processFilesInChunks();
+        }
+
+        function processFilesInChunks() {
+          if (!isProcessing) return;
+
+          const chunkSize = parseInt(chunkSizeInput.value) || 3;
+          const remainingFiles = files.slice(totalProcessed);
+          const chunk = remainingFiles.slice(0, chunkSize);
+
+          if (chunk.length === 0) {
+            finishProcessing();
+            return;
+          }
+
+          // Her dosyayı işle
+          const promises = chunk.map((file) => processFile(file));
+
+          Promise.all(promises)
+            .then(() => {
+              // İlerleme güncelle
+              updateProgress(totalProcessed, files.length);
+
+              // Sonraki yığını işle
+              setTimeout(() => {
+                processFilesInChunks();
+              }, 10);
+            })
+            .catch((error) => {
+              console.error("İşleme hatası:", error);
+              finishProcessing();
+            });
+        }
+
+        function processFile(file) {
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+              const img = new Image();
+
+              img.onload = function () {
+                try {
+                  let finalWidth = img.width;
+                  let finalHeight = img.height;
+                  let finalBase64 = e.target.result;
+
+                  // Yeniden boyutlandırma gerekiyorsa
+                  if (resizeCheckbox.checked) {
+                    const targetWidth =
+                      parseInt(document.getElementById("width").value) || 600;
+                    const targetHeight =
+                      parseInt(document.getElementById("height").value) || 400;
+                    const maintainAspect =
+                      document.getElementById("maintain-aspect").checked;
+
+                    // Boyutları hesapla
+                    const dimensions = calculateDimensions(
+                      img.width,
+                      img.height,
+                      targetWidth,
+                      targetHeight,
+                      maintainAspect
+                    );
+
+                    // Canvas oluştur ve boyutlandır
+                    const canvas = document.createElement("canvas");
+                    canvas.width = dimensions.width;
+                    canvas.height = dimensions.height;
+
+                    // Resmi çiz
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(
+                      img,
+                      0,
+                      0,
+                      dimensions.width,
+                      dimensions.height
+                    );
+
+                    // Base64 alın
+                    finalBase64 = canvas.toDataURL(getMimeType(file.name));
+                    finalWidth = dimensions.width;
+                    finalHeight = dimensions.height;
+                  }
+
+                  // Sonucu kaydet
+                  const result = {
+                    id: generateId(),
+                    fileName: file.name,
+                    base64: finalBase64,
+                    width: finalWidth,
+                    height: finalHeight,
+                    originalSize: file.size,
+                    encodedSize: finalBase64.length,
+                  };
+
+                  processedFiles.push(result);
+                  totalProcessed++;
+
+                  // Sonuç göster
+                  addResultToGrid(result);
+
+                  resolve();
+                } catch (error) {
+                  console.error(`${file.name} işlenirken hata:`, error);
+                  totalErrors++;
+                  totalProcessed++;
+                  resolve(); // Hatayı yakalayıp devam et
+                }
+              };
+
+              img.onerror = function () {
+                console.error(`${file.name} yüklenirken hata.`);
+                totalErrors++;
+                totalProcessed++;
+                resolve(); // Hatayı yakalayıp devam et
+              };
+
+              img.src = e.target.result;
+            };
+
+            reader.onerror = function () {
+              console.error(`${file.name} okunurken hata.`);
+              totalErrors++;
+              totalProcessed++;
+              resolve(); // Hatayı yakalayıp devam et
+            };
+
+            reader.readAsDataURL(file);
+          });
+        }
+
+        function updateProgress(current, total) {
+          const percent = total > 0 ? Math.round((current / total) * 100) : 0;
+          progressBar.style.width = `${percent}%`;
+          progressStatus.textContent = `${current}/${total} işlendi (${totalErrors} hata)`;
+          progressPercentage.textContent = `${percent}%`;
+        }
+
+        function finishProcessing() {
+          isProcessing = false;
+          resultsPanel.classList.remove("hidden");
+          updateProgress(totalProcessed, files.length);
+          console.log(
+            `İşlem tamamlandı: ${totalProcessed} başarılı, ${totalErrors} başarısız.`
+          );
+        }
+
+        function addResultToGrid(result) {
+          const resultItem = document.createElement("div");
+          resultItem.className = "result-item";
+          resultItem.dataset.id = result.id;
+
+          const resultImg = document.createElement("div");
+          resultImg.className = "result-img";
+
+          const img = document.createElement("img");
+          img.src = result.base64;
+          img.alt = result.fileName;
+          resultImg.appendChild(img);
+
+          const resultInfo = document.createElement("div");
+          resultInfo.className = "result-info";
+
+          const fileName = document.createElement("div");
+          fileName.className = "result-filename";
+          fileName.textContent = result.fileName;
+
+          const dimensions = document.createElement("div");
+          dimensions.className = "result-stats";
+          dimensions.textContent = `${result.width}×${result.height}`;
+
+          const size = document.createElement("div");
+          size.className = "result-stats";
+          const originalKb = Math.round(result.originalSize / 1024);
+          const encodedKb = Math.round(result.encodedSize / 1024);
+          size.textContent = `${originalKb}KB → ${encodedKb}KB`;
+
+          const resultActions = document.createElement("div");
+          resultActions.className = "result-actions";
+
+          const copyActions = document.createElement("div");
+          copyActions.className = "copy-actions";
+
+          // Kopayalama tercihi seçeneğine göre butonları oluştur
+          const copyType = document.querySelector(
+            'input[name="copy-type"]:checked'
+          ).value;
+
+          if (copyType === "img" || copyType === "both") {
+            const copyButton = document.createElement("button");
+            copyButton.className = "btn";
+            copyButton.textContent = "IMG Kopyala";
+            copyButton.addEventListener("click", () => {
+              copyToClipboard(
+                `<img src="${result.base64}" alt="${result.fileName}" />`
+              );
+              copyButton.textContent = "Kopyalandı!";
+              setTimeout(() => {
+                copyButton.textContent = "IMG Kopyala";
+              }, 2000);
+            });
+            copyActions.appendChild(copyButton);
+          }
+
+          if (copyType === "data" || copyType === "both") {
+            const copyDataButton = document.createElement("button");
+            copyDataButton.className = "btn";
+            copyDataButton.textContent = "Data Kopyala";
+            copyDataButton.addEventListener("click", () => {
+              const pureData = confirm(
+                "Sadece veriyi kopyalamak ister misiniz? (Yorum satırları olmadan)"
+              );
+
+              if (pureData) {
+                copyToClipboard(result.base64);
+              } else {
+                copyToClipboard(`/* ${result.fileName} */\n${result.base64}`);
+              }
+
+              copyDataButton.textContent = "Kopyalandı!";
+              setTimeout(() => {
+                copyDataButton.textContent = "Data Kopyala";
+              }, 2000);
+            });
+            copyActions.appendChild(copyDataButton);
+          }
+
+          resultActions.appendChild(copyActions);
+
+          resultInfo.appendChild(fileName);
+          resultInfo.appendChild(dimensions);
+          resultInfo.appendChild(size);
+
+          resultItem.appendChild(resultImg);
+          resultItem.appendChild(resultInfo);
+          resultItem.appendChild(resultActions);
+
+          resultsGrid.appendChild(resultItem);
+        }
+
+        function copyAllBase64() {
+          if (processedFiles.length === 0) {
+            alert("Henüz işlenmiş dosya yok.");
+            return;
+          }
+
+          let copyText = "";
+
+          // 0'dan başlayan sıralı liste oluştur
+          processedFiles.forEach((file, index) => {
+            copyText += `/* ${index}. ${file.fileName} */\n<img src="${file.base64}" alt="${file.fileName}" />\n\n`;
+          });
+
+          copyToClipboard(copyText);
+
+          // Geri bildirim
+          copyAllButton.textContent = "Kopyalandı!";
+          setTimeout(() => {
+            copyAllButton.textContent = "Tüm IMG Kodları";
+          }, 2000);
+        }
+
+        function copyAllDataOnly() {
+          if (processedFiles.length === 0) {
+            alert("Henüz işlenmiş dosya yok.");
+            return;
+          }
+
+          // Seçilen kopyalama formatını kontrol et
+          const pureDataFormat = confirm(
+            "Sadece veri kopyalansın mı? (Yorum satırları olmadan)"
+          );
+          let copyText = "";
+
+          // 0'dan başlayan sıralı liste oluştur - sadece data kısmı
+          processedFiles.forEach((file, index) => {
+            if (pureDataFormat) {
+              // Saf data - yorum satırları olmadan
+              copyText += file.base64 + "\n\n";
+            } else {
+              // Yorumlu data
+              copyText += `/* ${index}. ${file.fileName} */\n${file.base64}\n\n`;
+            }
+          });
+
+          copyToClipboard(copyText);
+
+          // Geri bildirim
+          copyAllDataButton.textContent = "Kopyalandı!";
+          setTimeout(() => {
+            copyAllDataButton.textContent = "Tüm Data'lar";
+          }, 2000);
+        }
+
+        function saveAsTextFile(dataOnly = false) {
+          if (processedFiles.length === 0) {
+            alert("Henüz işlenmiş dosya yok.");
+            return;
+          }
+
+          // Data formatını kontrol et
+          let pureData = false;
+          if (dataOnly) {
+            pureData = confirm(
+              "Sadece veri kaydedilsin mi? (Yorum satırları olmadan)"
+            );
+          }
+
+          let fileContent = "";
+
+          // 0'dan başlayan sıralı liste oluştur
+          processedFiles.forEach((file, index) => {
+            if (dataOnly) {
+              if (pureData) {
+                // Saf data - yorum satırları olmadan
+                fileContent += file.base64 + "\n\n";
+              } else {
+                // Yorumlu data
+                fileContent += `/* ${index}. ${file.fileName} */\n${file.base64}\n\n`;
+              }
+            } else {
+              fileContent += `/* ${index}. ${file.fileName} */\n<img src="${file.base64}" alt="${file.fileName}" />\n\n`;
+            }
+          });
+
+          // Dosya formatı belirle
+          const fileType = dataOnly ? (pureData ? "pure_data" : "data") : "img";
+
+          // Dosya oluştur ve indir
+          const blob = new Blob([fileContent], { type: "text/plain" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `base64_${fileType}_${new Date()
+            .toISOString()
+            .slice(0, 10)}.txt`;
+          document.body.appendChild(a);
+          a.click();
+
+          // Temizle
+          setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }, 100);
+        }
+
+        function resetApplication() {
+          files = [];
+          processedFiles = [];
+          isProcessing = false;
+          totalProcessed = 0;
+          totalErrors = 0;
+
+          // UI'ı sıfırla
+          fileCounter.textContent = "0";
+          progressArea.style.display = "none";
+          resultsPanel.classList.add("hidden");
+          resultsGrid.innerHTML = "";
+          startButton.disabled = true;
+        }
+
+        function copyToClipboard(text) {
+          const textarea = document.createElement("textarea");
+          textarea.value = text;
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand("copy");
+          document.body.removeChild(textarea);
+        }
+
+        function generateId() {
+          return `img_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        }
+
+        function calculateDimensions(
+          srcWidth,
+          srcHeight,
+          targetWidth,
+          targetHeight,
+          maintainAspect
+        ) {
+          if (!maintainAspect) {
+            return { width: targetWidth, height: targetHeight };
+          }
+
+          const srcRatio = srcWidth / srcHeight;
+          const targetRatio = targetWidth / targetHeight;
+
+          let newWidth = targetWidth;
+          let newHeight = targetHeight;
+
+          if (srcRatio > targetRatio) {
+            // Source image is wider
+            newHeight = targetWidth / srcRatio;
+          } else {
+            // Source image is taller
+            newWidth = targetHeight * srcRatio;
+          }
+
+          return {
+            width: Math.round(newWidth),
+            height: Math.round(newHeight),
+          };
+        }
+
+        function getMimeType(fileName) {
+          const extension = fileName.split(".").pop().toLowerCase();
+
+          const mimeTypes = {
+            jpg: "image/jpeg",
+            jpeg: "image/jpeg",
+            png: "image/png",
+            gif: "image/gif",
+            webp: "image/webp",
+            svg: "image/svg+xml",
+            bmp: "image/bmp",
+          };
+
+          return mimeTypes[extension] || "image/png";
+        }
+      });
+    </script>
+  </body>
+</html>

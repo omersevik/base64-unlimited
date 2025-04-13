@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>High Performance Base64 Encoder</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-container">
+      <header>
+        <h1>High Performance Base64 Encoder</h1>
+        <div class="subtitle">
+          Optimized for processing large batches of images
+        </div>
+      </header>
+
+      <main>
+        <div class="controls-container">
+          <div class="upload-controls">
+            <div class="control-group">
+              <h2>1. Select Images</h2>
+              <div class="upload-zone" id="drop-area">
+                <p>Drag & drop images here or</p>
+                <button id="upload-button" class="primary-button">
+                  Select Files
+                </button>
+                <input
+                  type="file"
+                  id="file-input"
+                  accept="image/*"
+                  multiple
+                  hidden
+                />
+              </div>
+            </div>
+
+            <div class="control-group">
+              <h2>2. Processing Options</h2>
+              <div class="options-panel">
+                <div class="option-row">
+                  <label class="checkbox-container">
+                    <input type="checkbox" id="resize-checkbox" />
+                    <span class="checkbox-label">Resize images</span>
+                  </label>
+                </div>
+
+                <div class="resize-inputs hidden" id="resize-controls">
+                  <div class="option-row">
+                    <label for="resize-width">Width:</label>
+                    <input
+                      type="number"
+                      id="resize-width"
+                      value="600"
+                      min="1"
+                      class="number-input"
+                    />
+                    <span>px</span>
+                  </div>
+
+                  <div class="option-row">
+                    <label for="resize-height">Height:</label>
+                    <input
+                      type="number"
+                      id="resize-height"
+                      value="400"
+                      min="1"
+                      class="number-input"
+                    />
+                    <span>px</span>
+                  </div>
+
+                  <div class="option-row">
+                    <label for="maintain-aspect">
+                      <input type="checkbox" id="maintain-aspect" checked />
+                      <span>Maintain aspect ratio</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="option-row">
+                  <label class="checkbox-container">
+                    <input type="checkbox" id="batch-processing" checked />
+                    <span class="checkbox-label">Use batch processing</span>
+                  </label>
+                  <div class="tooltip">
+                    Recommended for large number of files
+                  </div>
+                </div>
+
+                <div class="option-row">
+                  <label for="batch-size">Batch size:</label>
+                  <input
+                    type="number"
+                    id="batch-size"
+                    value="10"
+                    min="1"
+                    max="100"
+                    class="number-input"
+                  />
+                  <div class="tooltip">Number of images to process at once</div>
+                </div>
+
+                <div class="option-row">
+                  <button id="start-processing" class="primary-button" disabled>
+                    Start Processing
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="results-controls">
+            <div class="control-group">
+              <h2>3. Results</h2>
+              <div class="progress-container hidden" id="progress-container">
+                <div class="progress-stats">
+                  <span id="processed-count">0</span>/<span id="total-count"
+                    >0</span
+                  >
+                  files processed
+                </div>
+                <div class="progress-bar-container">
+                  <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                <div class="progress-percentage" id="progress-percentage">
+                  0%
+                </div>
+              </div>
+
+              <div class="bulk-actions hidden" id="bulk-actions">
+                <button id="copy-all-button" class="action-button">
+                  Copy All Images
+                </button>
+                <button id="save-all-button" class="action-button">
+                  Save As Text File
+                </button>
+                <button id="reset-button" class="secondary-button">
+                  Process New Batch
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="results-container hidden" id="results-container">
+          <div class="results-header">
+            <h3>Processed Files</h3>
+            <div class="results-summary" id="results-summary"></div>
+          </div>
+          <div class="results-grid" id="results-grid"></div>
+        </div>
+      </main>
+
+      <footer>
+        <p>
+          High Performance Base64 Encoder - Optimized for large batch processing
+        </p>
+      </footer>
+    </div>
+
+    <!-- Result item template -->
+    <template id="result-template">
+      <div class="result-item">
+        <div class="result-preview">
+          <img class="result-thumbnail" />
+        </div>
+        <div class="result-details">
+          <div class="result-filename"></div>
+          <div class="result-stats">
+            <span class="result-dimensions"></span>
+            <span class="result-size"></span>
+          </div>
+        </div>
+        <div class="result-actions">
+          <button class="copy-button" title="Copy Base64">Copy</button>
+        </div>
+      </div>
+    </template>
+
+    <!-- Import web workers -->
+    <script src="workers/image-worker.js" defer></script>
+    <script src="app.js" defer></script>
+  </body>
+</html>
